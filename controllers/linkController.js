@@ -36,7 +36,6 @@ const linkClick = async (req, res) => {
       });
     }
     let visitorCookieIdKey = qrCode.userId;
-    console.log(cookies);
     visitorCookieId = cookies[visitorCookieIdKey] || null;
 
     let visitorData = null;
