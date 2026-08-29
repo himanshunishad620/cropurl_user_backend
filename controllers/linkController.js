@@ -118,11 +118,7 @@ const linkClick = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Working",
-      city: cityName,
-    });
+    return res.redirect(qrCode.destinationUrl);
   } catch (err) {
     console.error("Link analytics error:", err);
 
