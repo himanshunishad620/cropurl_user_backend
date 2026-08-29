@@ -24,7 +24,6 @@ const linkClick = async (req, res) => {
       message: "Invalid URL",
     });
   }
-
   try {
     const geo = geolocation({
       headers: new Headers(req.headers),
