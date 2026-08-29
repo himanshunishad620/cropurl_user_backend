@@ -57,7 +57,7 @@ const linkClick = async (req, res) => {
     const userAgentParser = new UAParser(req.headers["user-agent"]);
     const browserName = userAgentParser.getBrowser().name || "Unknown";
 
-    const cityName = "Kanpur";
+    const cityName = "Gorakhpur";
 
     const currentDate = new Date().toISOString().split("T")[0];
     const globalAnalyticsUpdate = {
