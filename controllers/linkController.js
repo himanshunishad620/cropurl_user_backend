@@ -16,7 +16,9 @@ const actions = {
 };
 
 const linkClick = async (req, res) => {
-  const geo = geolocation(req);
+  const geo = geolocation({
+    headers: new Headers(req.headers),
+  });
   const { actionType, shortCode } = req.params;
   const cookies = req.cookies;
   if (!totalActions[actionType || !actions[actionType]])
