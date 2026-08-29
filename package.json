@@ -11,6 +11,7 @@
     "start": "nodemon server.js"
   },
   "dependencies": {
+    "@vercel/functions": "^3.9.5",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dns": "^0.2.2",

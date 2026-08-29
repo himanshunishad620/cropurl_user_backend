@@ -3,6 +3,7 @@ const QRAnalytics = require("../models/QRAnalytics");
 const QRCode = require("../models/QRCode");
 const Visitor = require("../models/Visitor");
 const UAParser = require("ua-parser-js");
+const { geolocation } = require("@vercel/functions");
 
 const totalActions = {
   c: "totalClicks",
@@ -15,6 +16,7 @@ const actions = {
 };
 
 const linkClick = async (req, res) => {
+  const geo = geolocation(req);
   const { actionType, shortCode } = req.params;
   const cookies = req.cookies;
   if (!totalActions[actionType || !actions[actionType]])
@@ -57,7 +59,7 @@ const linkClick = async (req, res) => {
     const userAgentParser = new UAParser(req.headers["user-agent"]);
     const browserName = userAgentParser.getBrowser().name || "Unknown";
 
-    const cityName = "Gorakhpur";
+    const cityName = geo.city || "Unknown";
 
     const currentDate = new Date().toISOString().split("T")[0];
     const globalAnalyticsUpdate = {
@@ -112,6 +114,7 @@ const linkClick = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Working",
+      city: geo.city || "Not working",
     });
   } catch (err) {
     console.error(err);
