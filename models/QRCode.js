@@ -7,7 +7,11 @@ const QRCodeSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-
+    totalEngagement: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     name: {
       type: String,
       required: true,
