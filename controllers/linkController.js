@@ -179,7 +179,7 @@ const scanQr = async (req, res) => {
 
     const analyticsFields = {
       [`totalScans`]: 1,
-      [`daily.${currentDate}.clicks`]: 1,
+      [`daily.${currentDate}.scans`]: 1,
       [`browser.${browserName}`]: 1,
       [`cities.${cityName}`]: 1,
     };
