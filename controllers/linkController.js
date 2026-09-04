@@ -87,9 +87,14 @@ const linkClick = async (req, res) => {
       },
     };
 
+    const incrementTotalEngagement = {
+      $inc: {
+        totalEngagement: 1,
+      },
+    };
     const updateOperations = [
       Global.findOneAndUpdate({ userId: qrCode.userId }, globalAnalyticsUpdate),
-
+      QRCode.findOneAndUpdate({ shortCode }, incrementTotalEngagement),
       QRAnalytics.findOneAndUpdate({ shortCode }, qrAnalyticsUpdate),
     ];
 
