@@ -1,8 +1,9 @@
 const { Router } = require("express");
-const { linkClick } = require("../controllers/linkController");
+const { clickLink, scanQr } = require("../controllers/linkController");
 
 const router = Router();
 
-router.get("/:actionType/:shortCode", linkClick);
+router.get("/:shortCode", clickLink);
+router.get("/q/:shortCode", scanQr);
 
 module.exports = router;

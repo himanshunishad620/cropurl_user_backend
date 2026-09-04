@@ -5,25 +5,15 @@ const Visitor = require("../models/Visitor");
 const UAParser = require("ua-parser-js");
 const { geolocation } = require("@vercel/functions");
 
-const totalActions = {
-  c: "totalClicks",
-  q: "totalScans",
-};
+const clickLink = async (req, res) => {
+  const { shortCode } = req.params;
 
-const actions = {
-  c: "clicks",
-  q: "scans",
-};
-
-const linkClick = async (req, res) => {
-  const { actionType, shortCode } = req.params;
-
-  if (!totalActions[actionType] || !actions[actionType]) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid URL",
-    });
-  }
+  // if (!totalActions[actionType] || !actions[actionType]) {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: "Invalid URL",
+  //   });
+  // }
   try {
     const geo = geolocation({
       headers: new Headers(req.headers),
@@ -67,8 +57,8 @@ const linkClick = async (req, res) => {
     const currentDate = new Date().toISOString().split("T")[0];
 
     const analyticsFields = {
-      [totalActions[actionType]]: 1,
-      [`daily.${currentDate}.${actions[actionType]}`]: 1,
+      [`totalClicks`]: 1,
+      [`daily.${currentDate}.clicks`]: 1,
       [`browser.${browserName}`]: 1,
       [`cities.${cityName}`]: 1,
     };
@@ -136,6 +126,128 @@ const linkClick = async (req, res) => {
   }
 };
 
+const scanQr = async (req, res) => {
+  const { shortCode } = req.params;
+
+  // if (!totalActions[actionType] || !actions[actionType]) {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: "Invalid URL",
+  //   });
+  // }
+  try {
+    const geo = geolocation({
+      headers: new Headers(req.headers),
+    });
+
+    const qrCode = await QRCode.findOne({
+      shortCode,
+      isActive: true,
+    }).lean();
+
+    if (!qrCode) {
+      return res.status(404).json({
+        success: false,
+        message: "QR not found",
+      });
+    }
+
+    const visitorCookieIdKey = qrCode.userId.toString();
+    const visitorCookieId = req.cookies?.[visitorCookieIdKey];
+
+    let visitorData = null;
+
+    if (visitorCookieId) {
+      visitorData = await Visitor.findById(visitorCookieId).lean();
+    }
+
+    const isNewVisitor = !visitorData;
+
+    if (isNewVisitor) {
+      visitorData = await Visitor.create({
+        shortCodes: [],
+      });
+    }
+
+    const hasVisitedBefore = visitorData.shortCodes.includes(shortCode);
+
+    const browserName =
+      new UAParser(req.headers["user-agent"]).getBrowser().name || "Unknown";
+
+    const cityName = geo.city || "Unknown";
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    const analyticsFields = {
+      [`totalScans`]: 1,
+      [`daily.${currentDate}.clicks`]: 1,
+      [`browser.${browserName}`]: 1,
+      [`cities.${cityName}`]: 1,
+    };
+
+    const globalAnalyticsUpdate = {
+      $inc: {
+        ...analyticsFields,
+        uniqueVisitors: isNewVisitor ? 1 : 0,
+      },
+    };
+
+    const qrAnalyticsUpdate = {
+      $inc: {
+        ...analyticsFields,
+        uniqueClicks: hasVisitedBefore ? 0 : 1,
+      },
+    };
+
+    const incrementTotalEngagement = {
+      $inc: {
+        totalEngagement: 1,
+      },
+    };
+    const updateOperations = [
+      Global.findOneAndUpdate({ userId: qrCode.userId }, globalAnalyticsUpdate),
+      QRCode.findOneAndUpdate({ shortCode }, incrementTotalEngagement),
+      QRAnalytics.findOneAndUpdate({ shortCode }, qrAnalyticsUpdate),
+    ];
+
+    if (!hasVisitedBefore) {
+      updateOperations.push(
+        Visitor.updateOne(
+          { _id: visitorData._id },
+          {
+            $push: {
+              shortCodes: shortCode,
+            },
+          },
+        ),
+      );
+    }
+
+    await Promise.all(updateOperations);
+
+    if (isNewVisitor) {
+      res.cookie(visitorCookieIdKey, visitorData._id.toString(), {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 5 * 365 * 24 * 60 * 60 * 1000,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Thank you for visiting!",
+    });
+  } catch (err) {
+    console.error("Link analytics error:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+module.exports = { clickLink, scanQr };
 // const linkClick = async (req, res) => {
 //   const { actionType, shortCode } = req.params;
 //   const cookies = req.cookies;
@@ -247,5 +359,3 @@ const linkClick = async (req, res) => {
 //     });
 //   }
 // };
-
-module.exports = { linkClick };
