@@ -8,12 +8,6 @@ const { geolocation } = require("@vercel/functions");
 const clickLink = async (req, res) => {
   const { shortCode } = req.params;
 
-  // if (!totalActions[actionType] || !actions[actionType]) {
-  //   return res.status(400).json({
-  //     success: false,
-  //     message: "Invalid URL",
-  //   });
-  // }
   try {
     const geo = geolocation({
       headers: new Headers(req.headers),
@@ -111,11 +105,7 @@ const clickLink = async (req, res) => {
         maxAge: 5 * 365 * 24 * 60 * 60 * 1000,
       });
     }
-
-    return res.status(200).json({
-      success: true,
-      message: "Thank you for visiting!",
-    });
+    return res.redirect(qr.destinationUrl);
   } catch (err) {
     console.error("Link analytics error:", err);
 
@@ -129,12 +119,6 @@ const clickLink = async (req, res) => {
 const scanQr = async (req, res) => {
   const { shortCode } = req.params;
 
-  // if (!totalActions[actionType] || !actions[actionType]) {
-  //   return res.status(400).json({
-  //     success: false,
-  //     message: "Invalid URL",
-  //   });
-  // }
   try {
     const geo = geolocation({
       headers: new Headers(req.headers),
@@ -233,10 +217,7 @@ const scanQr = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Thank you for visiting!",
-    });
+    return res.redirect(qr.destinationUrl);
   } catch (err) {
     console.error("Link analytics error:", err);
 
