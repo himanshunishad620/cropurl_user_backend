@@ -37,6 +37,42 @@ The service manages engagement data including:
 - Visitor cities
 - Browsers
 
+## 💻 Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/himanshunishad620/cropurl_user_backend.git
+cd cropurl_user_backend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create your `.env` file and add the required configuration.
+
+```env
+MONGODB_URI=<your_mongodb_connection_string>
+NODE_ENV=development
+CLIENT_URL=<your_frontend_url>
+
+```
+
+Start the development server:
+
+```bash
+npm start
+```
+
+The API will be available at:
+
+```text
+http://localhost:1000
+```
+
 ## 🎯 Purpose
 
 This service is designed specifically to **manage click and QR scan tracking** separately from CropURL's core application backend.
