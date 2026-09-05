@@ -105,7 +105,7 @@ const clickLink = async (req, res) => {
         maxAge: 5 * 365 * 24 * 60 * 60 * 1000,
       });
     }
-    return res.redirect(qr.destinationUrl);
+    return res.redirect(qrCode.destinationUrl);
   } catch (err) {
     console.error("Link analytics error:", err);
 
@@ -217,7 +217,7 @@ const scanQr = async (req, res) => {
       });
     }
 
-    return res.redirect(qr.destinationUrl);
+    return res.redirect(qrCode.destinationUrl);
   } catch (err) {
     console.error("Link analytics error:", err);
 
