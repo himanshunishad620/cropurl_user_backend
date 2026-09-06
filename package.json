@@ -17,6 +17,7 @@
     "dns": "^0.2.2",
     "dotenv": "^16.4.5",
     "express": "^5.2.1",
+    "geoip-lite": "^2.0.3",
     "mongoose": "^9.9.4",
     "nodemon": "^3.1.14",
     "ua-parser-js": "^2.0.10"

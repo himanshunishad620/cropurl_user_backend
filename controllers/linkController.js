@@ -3,7 +3,7 @@ const QRAnalytics = require("../models/QRAnalytics");
 const QRCode = require("../models/QRCode");
 const Visitor = require("../models/Visitor");
 const UAParser = require("ua-parser-js");
-const { geolocation } = require("@vercel/functions");
+const geoip = require("geoip-lite");
 
 const clickLink = async (req, res) => {
   const { shortCode } = req.params;
@@ -29,11 +29,13 @@ const clickLink = async (req, res) => {
     const browserName =
       new UAParser(req.headers["user-agent"]).getBrowser().name || "Unknown";
 
-    const geo = geolocation({
-      headers: new Headers(req.headers),
-    });
+    // const geo = geolocation({
+    //   headers: new Headers(req.headers),
+    // });
 
-    const cityName = geo.city || "Unknown";
+    const geo = geoip.lookup(ip);
+
+    const cityName = geo?.city || "Unknown";
     const currentDate = new Date().toISOString().split("T")[0];
 
     let visitorData = null;
