@@ -8,6 +8,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.set("trust proxy", true);
 app.use(cookieParser());
 app.get("/", (req, res) => {
   res.redirect(process.env.CLIENT_URL);
