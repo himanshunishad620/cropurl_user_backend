@@ -32,10 +32,12 @@ const clickLink = async (req, res) => {
     // const geo = geolocation({
     //   headers: new Headers(req.headers),
     // });
-    ip = req.ip;
+    const ip = req.ip;
     ip = ip.replace(/^::ffff:/, "");
 
     const geo = geoip.lookup(ip);
+    console.log("Geo:", geo);
+    console.log("City:", geo.city);
 
     const cityName = geo?.city || "Unknown";
     const currentDate = new Date().toISOString().split("T")[0];
@@ -271,9 +273,15 @@ const scanQr = async (req, res) => {
     const browserName =
       new UAParser(req.headers["user-agent"]).getBrowser().name || "Unknown";
 
-    const geo = geolocation({
-      headers: new Headers(req.headers),
-    });
+    // const geo = geolocation({
+    //   headers: new Headers(req.headers),
+    // });
+    const ip = req.ip;
+    ip = ip.replace(/^::ffff:/, "");
+
+    const geo = geoip.lookup(ip);
+    console.log("Geo:", geo);
+    console.log("City:", geo.city);
 
     const cityName = geo.city || "Unknown";
     const currentDate = new Date().toISOString().split("T")[0];
