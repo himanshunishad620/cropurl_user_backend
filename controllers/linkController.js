@@ -32,7 +32,7 @@ const clickLink = async (req, res) => {
     // const geo = geolocation({
     //   headers: new Headers(req.headers),
     // });
-    const ip = req.ip;
+    let ip = req.ip;
     ip = ip.replace(/^::ffff:/, "");
     console.log(ip);
     const geo = geoip.lookup(ip);
@@ -276,7 +276,7 @@ const scanQr = async (req, res) => {
     // const geo = geolocation({
     //   headers: new Headers(req.headers),
     // });
-    const ip = req.ip;
+    let ip = req.ip;
     ip = ip.replace(/^::ffff:/, "");
     console.log(ip);
     const geo = geoip.lookup(ip);
