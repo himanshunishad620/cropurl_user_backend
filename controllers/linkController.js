@@ -32,6 +32,8 @@ const clickLink = async (req, res) => {
     // const geo = geolocation({
     //   headers: new Headers(req.headers),
     // });
+    ip = req.ip;
+    ip = ip.replace(/^::ffff:/, "");
 
     const geo = geoip.lookup(ip);
 
