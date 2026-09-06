@@ -33,7 +33,8 @@ const clickLink = async (req, res) => {
     //   headers: new Headers(req.headers),
     // });
     let ip = req.ip;
-    ip = ip.replace(/^::ffff:/, "");
+    // ip = ip.replace(/^::ffff:/, "");
+    ip = ip.split(":")[3];
     console.log(ip);
     const geo = geoip.lookup(ip);
     console.log("Geo:", geo);
@@ -277,7 +278,7 @@ const scanQr = async (req, res) => {
     //   headers: new Headers(req.headers),
     // });
     let ip = req.ip;
-    ip = ip.replace(/^::ffff:/, "");
+    ip = ip.split(":")[3];
     console.log(ip);
     const geo = geoip.lookup(ip);
     console.log("Geo:", geo);
