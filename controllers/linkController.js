@@ -34,6 +34,7 @@ const clickLink = async (req, res) => {
     // });
     let ip = req.ip;
     // ip = ip.replace(/^::ffff:/, "");
+    console.log("Before", ip);
     ip = ip.split(":")[3];
     console.log(ip);
     const geo = geoip.lookup(ip);
@@ -278,6 +279,7 @@ const scanQr = async (req, res) => {
     //   headers: new Headers(req.headers),
     // });
     let ip = req.ip;
+    console.log("Before", ip);
     ip = ip.split(":")[3];
     console.log(ip);
     const geo = geoip.lookup(ip);
