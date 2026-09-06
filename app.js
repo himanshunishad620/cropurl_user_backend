@@ -12,10 +12,6 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   res.redirect(process.env.CLIENT_URL);
 });
-app.head("/health/check", (req, res) => {
-  console.log("Health Checked");
-  res.status(200).end();
-});
 app.use("/", FirstShortUrl);
 app.use("/", LinkRoutes);
 
