@@ -34,13 +34,11 @@ const clickLink = async (req, res) => {
     //   headers: new Headers(req.headers),
     // });
     let ip = req.ip;
-    // const geo = geoip.lookup(ip);
-    // console.log("Geo:", geo);
-    // console.log("City:", geo?.city);
-    const city = await getCity(ip);
-    console.log(ip);
-    console.log("City in api:", city);
-    const cityName = city || "Unknown";
+    const response = await fetch(
+      `https://ipinfo.io/${ip}/json?token=${process.env.IP_INFO_TOKEN}`,
+    );
+    const jsonRes = await response.json();
+    const cityName = jsonRes?.city || "Unknown";
 
     const currentDate = new Date().toISOString().split("T")[0];
 
@@ -279,14 +277,11 @@ const scanQr = async (req, res) => {
     //   headers: new Headers(req.headers),
     // });
     let ip = req.ip;
-
-    // const geo = geoip.lookup(ip);
-
-    // console.log("Geo:", geo);
-    // console.log("City:", geo?.city);
-    const city = await getCity(ip);
-    console.log("Citye in api:", city);
-    const cityName = city || "Unknown";
+    const response = await fetch(
+      `https://ipinfo.io/${ip}/json?token=${process.env.IP_INFO_TOKEN}`,
+    );
+    const jsonRes = await response.json();
+    const cityName = jsonRes?.city || "Unknown";
     const currentDate = new Date().toISOString().split("T")[0];
 
     let visitorData = null;
