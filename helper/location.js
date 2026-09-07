@@ -7,7 +7,7 @@ async function getCity(ip) {
   try {
     const reader = await Reader.open(dbPath);
     const result = reader.city(ip);
-    city = result.city?.names?.e;
+    city = result.city?.names?.en;
   } catch (err) {
     console.error("Maxmind Error:", err.message);
   }
