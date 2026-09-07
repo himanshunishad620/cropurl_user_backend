@@ -11,6 +11,7 @@
     "start": "nodemon server.js"
   },
   "dependencies": {
+    "@maxmind/geoip2-node": "^7.1.0",
     "@vercel/functions": "^3.9.5",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",

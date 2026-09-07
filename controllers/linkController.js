@@ -4,6 +4,7 @@ const QRCode = require("../models/QRCode");
 const Visitor = require("../models/Visitor");
 const UAParser = require("ua-parser-js");
 const geoip = require("geoip-lite");
+const { getCity } = require("../helper/location");
 
 const clickLink = async (req, res) => {
   const { shortCode } = req.params;
@@ -33,11 +34,13 @@ const clickLink = async (req, res) => {
     //   headers: new Headers(req.headers),
     // });
     let ip = req.ip;
-    const geo = geoip.lookup(ip);
-    console.log("Geo:", geo);
-    console.log("City:", geo?.city);
+    // const geo = geoip.lookup(ip);
+    // console.log("Geo:", geo);
+    // console.log("City:", geo?.city);
+    const city = getCity(ip);
+    console.log(city);
+    const cityName = city || "Unknown";
 
-    const cityName = geo?.city || "Unknown";
     const currentDate = new Date().toISOString().split("T")[0];
 
     let visitorData = null;
@@ -275,11 +278,14 @@ const scanQr = async (req, res) => {
     //   headers: new Headers(req.headers),
     // });
     let ip = req.ip;
-    const geo = geoip.lookup(ip);
-    console.log("Geo:", geo);
-    console.log("City:", geo?.city);
 
-    const cityName = geo.city || "Unknown";
+    // const geo = geoip.lookup(ip);
+
+    // console.log("Geo:", geo);
+    // console.log("City:", geo?.city);
+    const city = getCity(ip);
+    console.log(city);
+    const cityName = city || "Unknown";
     const currentDate = new Date().toISOString().split("T")[0];
 
     let visitorData = null;
