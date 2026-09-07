@@ -11,6 +11,7 @@ app.use(cors());
 app.set("trust proxy", true);
 app.use(cookieParser());
 app.head("/health/check", (req, res) => {
+  console.log("Health Checked");
   return res.sendStatus(200);
 });
 app.get("/", (req, res) => {
