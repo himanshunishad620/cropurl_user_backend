@@ -3,8 +3,7 @@ const QRAnalytics = require("../models/QRAnalytics");
 const QRCode = require("../models/QRCode");
 const Visitor = require("../models/Visitor");
 const UAParser = require("ua-parser-js");
-const geoip = require("geoip-lite");
-const { getCity } = require("../helper/location");
+const { client } = require("../config/redis");
 
 const clickLink = async (req, res) => {
   const { shortCode } = req.params;
@@ -34,11 +33,27 @@ const clickLink = async (req, res) => {
     //   headers: new Headers(req.headers),
     // });
     let ip = req.ip;
-    const response = await fetch(
-      `https://ipinfo.io/${ip}/json?token=${process.env.IP_INFO_TOKEN}`,
-    );
-    const jsonRes = await response.json();
-    const cityName = jsonRes?.city || "Unknown";
+    let cityName;
+    const key = `ipforcity:${ip}`;
+    try {
+      const cachedCity = await client.get(key);
+      if (cachedCity) {
+        cityName = cachedCity;
+      } else {
+        const response = await fetch(
+          `https://ipinfo.io/${ip}/json?token=${process.env.IP_INFO_TOKEN}`,
+        );
+        if (!response.ok) {
+          throw new Error(`IPinfo returned ${response.status}`);
+        }
+        const jsonRes = await response.json();
+        cityName = jsonRes?.city || "Unknown";
+        await client.set(key, cityName);
+      }
+    } catch (error) {
+      console.error("IP/city lookup failed:", error);
+      cityName = "Unknown";
+    }
 
     const currentDate = new Date().toISOString().split("T")[0];
 
@@ -278,11 +293,28 @@ const scanQr = async (req, res) => {
     // });
     // https://ipinfo.io/me?token=<token> to get the uses
     let ip = req.ip;
-    const response = await fetch(
-      `https://ipinfo.io/${ip}/json?token=${process.env.IP_INFO_TOKEN}`,
-    );
-    const jsonRes = await response.json();
-    const cityName = jsonRes?.city || "Unknown";
+    let cityName;
+    const key = `ipforcity:${ip}`;
+    try {
+      const cachedCity = await client.get(key);
+      if (cachedCity) {
+        cityName = cachedCity;
+      } else {
+        const response = await fetch(
+          `https://ipinfo.io/${ip}/json?token=${process.env.IP_INFO_TOKEN}`,
+        );
+        if (!response.ok) {
+          throw new Error(`IPinfo returned ${response.status}`);
+        }
+        const jsonRes = await response.json();
+        cityName = jsonRes?.city || "Unknown";
+        await client.set(key, cityName);
+      }
+    } catch (error) {
+      console.error("IP/city lookup failed:", error);
+      cityName = "Unknown";
+    }
+
     const currentDate = new Date().toISOString().split("T")[0];
 
     let visitorData = null;
