@@ -37,7 +37,7 @@ const clickLink = async (req, res) => {
     // const geo = geoip.lookup(ip);
     // console.log("Geo:", geo);
     // console.log("City:", geo?.city);
-    const city = getCity(ip);
+    const city = await getCity(ip);
     console.log(city);
     const cityName = city || "Unknown";
 
@@ -283,7 +283,7 @@ const scanQr = async (req, res) => {
 
     // console.log("Geo:", geo);
     // console.log("City:", geo?.city);
-    const city = getCity(ip);
+    const city = await getCity(ip);
     console.log(city);
     const cityName = city || "Unknown";
     const currentDate = new Date().toISOString().split("T")[0];
