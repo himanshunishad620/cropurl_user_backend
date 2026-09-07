@@ -276,6 +276,7 @@ const scanQr = async (req, res) => {
     // const geo = geolocation({
     //   headers: new Headers(req.headers),
     // });
+    // https://ipinfo.io/me?token=<token> to get the uses
     let ip = req.ip;
     const response = await fetch(
       `https://ipinfo.io/${ip}/json?token=${process.env.IP_INFO_TOKEN}`,
