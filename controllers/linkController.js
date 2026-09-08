@@ -29,7 +29,8 @@ const clickLink = async (req, res) => {
     const browserName =
       new UAParser(req.headers["user-agent"]).getBrowser().name || "Unknown";
 
-    let ip = req.ip;
+    const ip = req.ip;
+    console.log(ip);
     let cityName;
     const key = `ipforcity:${ip}`;
     try {
